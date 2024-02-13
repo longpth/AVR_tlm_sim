@@ -2,6 +2,7 @@
 #include <string>
 #include <cstring>
 #include <sstream>
+#include <iomanip>
 #include "MicroSim.h"
 
 #define PORT_SERVER 6868
@@ -148,9 +149,24 @@ std::string MicroSim::examineMemory(const std::string& address, int count) {
 
 // Function to display contents of all registers
 std::string MicroSim::displayRegisters() {
-    // TODO: Implement register display logic here
-    // Example: Return "Register contents: <contents>"
-    return "Register contents: <contents>";
+    uint8_t generalReigster[32];
+    uint8_t ioRegisters[64];
+    m_cpu->readRegisters(generalReigster, ioRegisters);
+    std::stringstream ss;
+    
+    // Display general purpose registers
+    ss << "General Purpose Registers:\n";
+    for (int i = 0; i < 32; ++i) {
+        ss << "R" << std::setw(2) << std::setfill('0') << i << ": 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(generalReigster[i]) << "\n";
+    }
+
+    // Display IO registers
+    ss << "\nIO Registers:\n";
+    for (int i = 0; i < 64; ++i) {
+        ss << "IO" << std::setw(2) << std::setfill('0') << i << ": 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(ioRegisters[i]) << "\n";
+    }
+
+    return ss.str();
 }
 
 // Function to display memory as a string

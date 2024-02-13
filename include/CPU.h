@@ -101,6 +101,12 @@ public:
   // SystemC thread for simulating CPU activity
   [[noreturn]] void CPU_thread();
 
+  // read all general registers and io registers
+  void readRegisters(uint8_t* generalRegister, uint8_t* ioRegister){
+    memcpy(generalRegister, m_registers, sizeof(m_registers));
+    memcpy(ioRegister, m_io_registers, sizeof(m_io_registers));
+  }
+
 private:
   // Clock period for the CPU
   sc_time m_clock_period;
