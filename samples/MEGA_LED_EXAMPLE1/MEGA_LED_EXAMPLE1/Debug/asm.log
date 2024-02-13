@@ -1,0 +1,79 @@
+[INFO] 0: RJMP : Relative Jump
+[INFO] 2: NOP : No Operation
+[INFO] 4: RJMP : Relative Jump
+[INFO] 6: NOP : No Operation
+[INFO] 8: RJMP : Relative Jump
+[INFO] a: NOP : No Operation
+[INFO] c: RJMP : Relative Jump
+[INFO] e: NOP : No Operation
+[INFO] 10: RJMP : Relative Jump
+[INFO] 12: NOP : No Operation
+[INFO] 14: RJMP : Relative Jump
+[INFO] 16: NOP : No Operation
+[INFO] 18: RJMP : Relative Jump
+[INFO] 1a: NOP : No Operation
+[INFO] 1c: RJMP : Relative Jump
+[INFO] 1e: NOP : No Operation
+[INFO] 20: RJMP : Relative Jump
+[INFO] 22: NOP : No Operation
+[INFO] 24: RJMP : Relative Jump
+[INFO] 26: NOP : No Operation
+[INFO] 28: RJMP : Relative Jump
+[INFO] 2a: NOP : No Operation
+[INFO] 2c: RJMP : Relative Jump
+[INFO] 2e: NOP : No Operation
+[INFO] 30: RJMP : Relative Jump
+[INFO] 32: NOP : No Operation
+[INFO] 34: RJMP : Relative Jump
+[INFO] 36: NOP : No Operation
+[INFO] 38: RJMP : Relative Jump
+[INFO] 3a: NOP : No Operation
+[INFO] 3c: RJMP : Relative Jump
+[INFO] 3e: NOP : No Operation
+[INFO] 40: RJMP : Relative Jump
+[INFO] 42: NOP : No Operation
+[INFO] 44: RJMP : Relative Jump
+[INFO] 46: NOP : No Operation
+[INFO] 48: RJMP : Relative Jump
+[INFO] 4a: NOP : No Operation
+[INFO] 4c: RJMP : Relative Jump
+[INFO] 4e: NOP : No Operation
+[INFO] 50: RJMP : Relative Jump
+[INFO] 52: NOP : No Operation
+[INFO] 54: RJMP : Relative Jump
+[INFO] 56: NOP : No Operation
+[INFO] 58: RJMP : Relative Jump
+[INFO] 5a: NOP : No Operation
+[INFO] 5c: RJMP : Relative Jump
+[INFO] 5e: NOP : No Operation
+[INFO] 60: RJMP : Relative Jump
+[INFO] 62: NOP : No Operation
+[INFO] 64: RJMP : Relative Jump
+[INFO] 66: NOP : No Operation
+[INFO] 68: EOR : Exclusive OR
+[INFO] 6a: OUT : Store Register to I/O Location
+[INFO] 6c: SER : Set Register
+[INFO] 6e: LDI : Load Immediate
+[INFO] 70: OUT : Store Register to I/O Location
+[INFO] 72: OUT : Store Register to I/O Location
+[INFO] 74: RCALL : Relative Call to Subroutine
+[INFO] 76: RJMP : Relative Jump
+[INFO] 78: RJMP : Relative Jump
+[INFO] 7a: IN : Load an I/O Location to Register
+[INFO] 7c: IN : Load an I/O Location to Register
+[INFO] 7e: ORI : Logical OR with Immediate
+[INFO] 80: ANDI : Logical AND with Immediate
+[INFO] 82: OUT : Store Register to I/O Location
+[INFO] 84: MOV : Copy Register
+[INFO] 86: ORI : Logical OR with Immediate
+[INFO] 88: OUT : Store Register to I/O Location
+[INFO] 8a: RET : Return from Subroutine
+[INFO] 8c: RCALL : Relative Call to Subroutine
+[INFO] 8e: SBIS : Skip if Bit in I/O Register is Set
+[INFO] 90: RJMP : Relative Jump
+[INFO] 92: CBI : Clear Bit in I/O Register
+[INFO] 94: RJMP : Relative Jump
+[INFO] 96: SBI : Set Bit in I/O Register
+[INFO] 98: RJMP : Relative Jump
+[INFO] 9a: CLI : Clear Global Interrupt Flag
+[INFO] 9c: RJMP : Relative Jump

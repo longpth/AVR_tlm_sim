@@ -1,0 +1,17 @@
+[
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "/home/longpth/workspace/work/000.arduino/arduino-1.8.12/hardware/arduino/avr/cores/arduino"
+  },
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "/home/longpth/workspace/work/000.arduino/arduino-1.8.12/hardware/arduino/avr/variants/eightanaloginputs"
+  },
+  {
+    "Sourcefile": "/tmp/arduino_build_663848/sketch/Blink.ino.cpp",
+    "Include": "",
+    "Includepath": null
+  }
+]
