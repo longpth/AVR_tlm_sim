@@ -13,10 +13,10 @@ union sram_un
 {
   struct sram_st
   {
-    uint8_t registers[32];                           // 32 General Purpose Registers
-    uint8_t io_registers[64];                        // 64 I/O Registers
-    uint8_t ext_io_registers[160];                   // 160 Extended I/O Registers
-    uint8_t sram[SRAM_DEFAULT_SIZE - 160 - 64 - 32]; // Internal SRAM with 1048 bytes of memory
+    uint8_t registers[32];                           // 32 General Purpose Registers 0x0000-0x001F
+    uint8_t io_registers[64];                        // 64 I/O Registers             0x0020-0x005F
+    uint8_t ext_io_registers[160];                   // 160 Extended I/O Registers   0x0060-0x00FF
+    uint8_t sram[SRAM_DEFAULT_SIZE - 160 - 64 - 32]; // Internal SRAM with 1048 bytes of memory 0x0100-0x08FF
   };
   uint8_t sram_data[SRAM_DEFAULT_SIZE];
 };

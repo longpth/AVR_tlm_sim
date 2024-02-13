@@ -27,3 +27,18 @@ MicroSim::~MicroSim()
   delete m_sram;
   delete m_busData;
 }
+
+void MicroSim::startGdbServer()
+{
+  m_gdb_server_thread = std::thread(&MicroSim::runGdbServer, this);
+}
+
+void MicroSim::stopGdbServer()
+{
+  m_gdb_server_thread.join();
+}
+
+void MicroSim::runGdbServer()
+{
+  
+}

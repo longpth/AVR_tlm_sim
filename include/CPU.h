@@ -8,6 +8,7 @@
 #include "SRam.h"
 
 #define STACK_SIZE 256
+#define IO_REGISTER_BASE_ADDRESS 0x0020
 
 struct SREG
 {
@@ -126,7 +127,7 @@ private:
   uint8_t m_registers[32];
 
   // io registers
-  uint8_t m_io_registers[4];
+  uint8_t m_io_registers[64];
 
   // A method to fetch instructions from memory
   uint32_t
@@ -140,6 +141,12 @@ private:
 
   // A method to execute the fetched instruction
   void execute_instruction(const Instruction_st &instruction);
+
+  // method to read the sram
+  void sram_read(uint16_t address, uint8_t* des, uint16_t length);
+
+  // method to write the sram
+  void sram_write(uint16_t address, uint8_t* src, uint16_t length);
 
   // Method to handle interrupts (if required)
   void handle_interrupts();

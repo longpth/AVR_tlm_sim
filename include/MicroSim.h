@@ -5,6 +5,12 @@
 #include <tlm_utils/simple_target_socket.h>
 #include <systemc.h>
 #include <string>
+#include <thread>
+#include <iostream>
+#include <cstring>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
 #include "Mytype.h"
 #include "CPU.h"
 #include "Flash.h"
@@ -24,4 +30,13 @@ public:
 
   // Destructor to clean up allocated memory
   ~MicroSim();
+
+  void startGdbServer();
+
+  void stopGdbServer();
+
+private:
+  std::thread m_gdb_server_thread;
+
+  void runGdbServer();
 };

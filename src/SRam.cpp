@@ -15,38 +15,36 @@ SRam::SRam(const sc_module_name &name)
 
 void SRam::b_transport(tlm::tlm_generic_payload &trans, sc_time &delay)
 {
-  // tlm::tlm_command cmd = trans.get_command();
-  // sc_dt::uint64 addr = trans.get_address();
-  // unsigned char *ptr = trans.get_data_ptr();
-  // unsigned int len = trans.get_data_length();
-  // unsigned char *byt = trans.get_byte_enable_ptr();
-  // unsigned int wid = trans.get_streaming_width();
+  tlm::tlm_command cmd = trans.get_command();
+  uint16_t addr = trans.get_address();
+  unsigned char *ptr = trans.get_data_ptr();
+  unsigned int len = trans.get_data_length();
 
-  // // Check if the access is within the bounds of the flash memory
-  // if (addr >= m_programflash_size || (addr + len) > m_programflash_size + 4 /*because we take 4 bytes for each instruction*/)
-  // {
-  //   trans.set_response_status(tlm::TLM_ADDRESS_ERROR_RESPONSE);
-  //   return;
-  // }
+  // Check if the access is within the bounds of the flash memory
+  if (addr >= SRAM_DEFAULT_SIZE || (addr + len) > SRAM_DEFAULT_SIZE)
+  {
+    trans.set_response_status(tlm::TLM_ADDRESS_ERROR_RESPONSE);
+    return;
+  }
 
-  // // Perform the operation
-  // if (cmd == tlm::TLM_READ_COMMAND)
-  // {
-  //   // Copy data from memory to payload's data pointer
-  //   memcpy(ptr, &m_programflash_data[addr], len);
-  // }
-  // else if (cmd == tlm::TLM_WRITE_COMMAND)
-  // {
-  //   // Copy data from payload's data pointer to memory
-  //   memcpy(&m_programflash_data[addr], ptr, len);
-  // }
-  // else
-  // {
-  //   // Command not supported
-  //   trans.set_response_status(tlm::TLM_COMMAND_ERROR_RESPONSE);
-  //   return;
-  // }
+  // Perform the operation
+  if (cmd == tlm::TLM_READ_COMMAND)
+  {
+    // Copy data from memory to payload's data pointer
+    memcpy(ptr, &m_sram_data.sram_data[addr], len);
+  }
+  else if (cmd == tlm::TLM_WRITE_COMMAND)
+  {
+    // Copy data from payload's data pointer to memory
+    memcpy(&m_sram_data.sram_data[addr], ptr, len);
+  }
+  else
+  {
+    // Command not supported
+    trans.set_response_status(tlm::TLM_COMMAND_ERROR_RESPONSE);
+    return;
+  }
 
-  // // Set response status to indicate successful completion
-  // trans.set_response_status(tlm::TLM_OK_RESPONSE);
+  // Set response status to indicate successful completion
+  trans.set_response_status(tlm::TLM_OK_RESPONSE);
 }

@@ -202,6 +202,51 @@ void CPU::execute_instruction(const Instruction_st &instruction)
 {
   (this->*m_map_instructionHandle[instruction.name])(instruction);
 }
+
+void CPU::sram_read(uint16_t address, uint8_t* des, uint16_t length)
+{
+  // Create a TLM transaction for read operation
+  tlm::tlm_generic_payload trans;
+  sc_time delay = SC_ZERO_TIME;
+
+  trans.set_command(tlm::TLM_READ_COMMAND);
+  trans.set_address(address);
+  trans.set_data_length(length);
+  trans.set_data_ptr(des);
+  trans.set_response_status(tlm::TLM_INCOMPLETE_RESPONSE);
+
+  // Execute the read transaction
+  cpu_data_out_socket->b_transport(trans, delay);
+
+  // Check for successful transaction
+  if (trans.is_response_error())
+  {
+    SC_REPORT_ERROR("TLM-2", "Read transaction returned with error!");
+  }
+}
+
+void CPU::sram_write(uint16_t address, uint8_t* src, uint16_t length)
+{
+  // Create a TLM transaction for read operation
+  tlm::tlm_generic_payload trans;
+  sc_time delay = SC_ZERO_TIME;
+
+  trans.set_command(tlm::TLM_WRITE_COMMAND);
+  trans.set_address(address);
+  trans.set_data_length(length); 
+  trans.set_data_ptr(src);
+  trans.set_response_status(tlm::TLM_INCOMPLETE_RESPONSE);
+
+  // Execute the read transaction
+  cpu_data_out_socket->b_transport(trans, delay);
+
+  // Check for successful transaction
+  if (trans.is_response_error())
+  {
+    SC_REPORT_ERROR("TLM-2", "Read transaction returned with error!");
+  }
+}
+
 void CPU::handle_interrupts()
 {
   // Implementation for handling interrupts
@@ -240,6 +285,9 @@ void CPU::operator_ADD(const Instruction_st &instruction)
   // Perform the logical ADD operation
   m_registers[Rd] = m_registers[Rd] + m_registers[Rr];
 
+  // write data to sram
+  sram_write(Rd, &m_registers[Rd], 1);
+
   AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => ", instruction.description, " R", std::dec, static_cast<int>(Rd), " ← R", static_cast<int>(Rd), " + R", static_cast<int>(Rr));
 
   m_program_counter += 1;
@@ -260,6 +308,9 @@ void CPU::operator_ADC(const Instruction_st &instruction)
 
   // Perform the logical ADC operation
   m_registers[Rd] = m_registers[Rd] + m_registers[Rr] + m_register_SREG.C;
+
+  // write data to sram
+  sram_write(Rd, &m_registers[Rd], 1);
 
   AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => ", instruction.description, " R", std::dec, static_cast<int>(Rd), " ← R", static_cast<int>(Rd), " + R", static_cast<int>(Rr), " + ", m_register_SREG.C);
 
@@ -292,6 +343,10 @@ void CPU::operator_ADIW(const Instruction_st &instruction)
   m_registers[d + 24] = static_cast<uint8_t>(result & 0xFF);
   m_registers[d + 25] = static_cast<uint8_t>((result >> 8) & 0xFF);
 
+  // write data to sram
+  sram_write(d + 24, &m_registers[d + 24], 1);
+  sram_write(d + 25, &m_registers[d + 25], 1);
+
   AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => ADIW Rd+1:Rd, K=", static_cast<int>(d + 24), ", ", static_cast<int>(K));
 
   m_program_counter += 1;
@@ -315,6 +370,9 @@ void CPU::operator_AND(const Instruction_st &instruction)
   // Perform the logical AND operation
   m_registers[Rd] &= m_registers[Rr];
 
+  // write data to sram 
+  sram_write(Rd, &m_registers[Rd], 1);
+
   AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => ", "Rd=", static_cast<int>(Rd), ", Rr=", static_cast<int>(Rr));
 
   m_program_counter += 1;
@@ -335,6 +393,9 @@ void CPU::operator_ANDI(const Instruction_st &instruction)
 
   // Perform the logical AND operation with immediate value
   m_registers[Rd] &= K;
+
+  // write data to sram 
+  sram_write(Rd, &m_registers[Rd], 1);
 
   AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => ", "Rd=", static_cast<int>(Rd), ", K=", static_cast<int>(K));
 
@@ -468,6 +529,9 @@ void CPU::operator_EOR(const Instruction_st &instruction)
   // Perform the logical XOR operation between the contents of Rd and Rr
   m_registers[Rd] ^= m_registers[Rr];
 
+  // write data to sram 
+  sram_write(Rd, &m_registers[Rd], 1);
+
   // Print debug information
   AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => EOR Rd,Rr=", static_cast<int>(Rd), ",", static_cast<int>(Rr));
 
@@ -516,6 +580,9 @@ void CPU::operator_LDI(const Instruction_st &instruction)
   // Load the immediate value into the destination register
   m_registers[Rd + 16] = K;
 
+  // write data to sram 
+  sram_write(Rd + 16, &m_registers[Rd + 16], 1);
+
   // Print debug information
   AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => LDI Rd,K=", static_cast<int>(Rd + 16), ",", static_cast<int>(K));
 
@@ -539,6 +606,9 @@ void CPU::operator_MOV(const Instruction_st &instruction)
 
   // Copy the value from the source register to the destination register
   m_registers[Rd] = m_registers[Rr];
+
+  // write data to sram 
+  sram_write(Rd, &m_registers[Rd], 1);
 
   // Print debug information
   AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => MOV Rd,Rr=", static_cast<int>(Rd), ",", static_cast<int>(Rr));
@@ -574,14 +644,17 @@ void CPU::operator_ORI(const Instruction_st &instruction)
   std::string instruction_counter_str = stream.str(); // Convert to string
 
   // Extract the destination register (Rd) and the immediate value (K) from the instruction
-  uint8_t d = (instruction.instructionRaw >> 4) & 0x1F; // Rd (destination register)
+  uint8_t Rd = (instruction.instructionRaw >> 4) & 0x1F; // Rd (destination register)
   uint8_t K = ((instruction.instructionRaw >> 4) & 0xF0) | (instruction.instructionRaw & 0x0F);        // K (immediate value)
 
   // Perform the logical OR operation
-  m_registers[d] |= K;
+  m_registers[Rd] |= K;
+
+  // write data to sram 
+  sram_write(Rd, &m_registers[Rd], 1);
 
   // Print debug information
-  AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => ORI Rd,K=", static_cast<int>(d), ",", static_cast<int>(K));
+  AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => ORI Rd,K=", static_cast<int>(Rd), ",", static_cast<int>(K));
 
   // Update program counter
   m_program_counter += 1;
@@ -601,9 +674,11 @@ void CPU::operator_OUT(const Instruction_st &instruction)
   uint8_t r = (instruction.instructionRaw >> 4) & 0x1F; // Rr (source register)
   uint8_t A = (((instruction.instructionRaw >> 5) & 0x30) | (instruction.instructionRaw & 0x0F));        // A (I/O location)
 
-  // Store the contents of register Rr in the I/O space
-  // Example code to store Rr to I/O(A)
-  // io_space[A] = m_registers[r];
+  // Stores data from register Rr in the Register File to I/O Space (Ports, Timers, Configuration Registers,etc.).
+  m_io_registers[A] = m_registers[r];
+
+  // write data to SRAM at IO_REGISTER_BASE_ADDRESS+A
+  sram_write(IO_REGISTER_BASE_ADDRESS+A, &m_io_registers[A], 1);
 
   // Print debug information
   AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => OUT A,Rr= ", static_cast<int>(A), ",", static_cast<int>(r));
@@ -693,6 +768,9 @@ void CPU::operator_SBI(const Instruction_st &instruction) {
     // Set the specified bit in the I/O register
     m_io_registers[A] |= (1 << b);
 
+    // write data to SRAM
+    sram_write(IO_REGISTER_BASE_ADDRESS+A, &m_io_registers[A], 1);
+
     // Print debug information
     AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => SBI ", static_cast<int>(A), ",", static_cast<int>(b));
 
@@ -710,6 +788,9 @@ void CPU::operator_SBIS(const Instruction_st &instruction) {
     // Extract the I/O register address (A) and bit position (b) from the instruction
     uint8_t A = (instruction.instructionRaw >> 3) & 0x1F; // Extract bits 4-8
     uint8_t b = instruction.instructionRaw & 0x07;        // Extract bits 0-2
+
+    // read data from SRAM
+    sram_read(IO_REGISTER_BASE_ADDRESS+A, &m_io_registers[A], 1);
 
     // Test the specified bit in the I/O register
     if ((m_io_registers[A] >> b) & 0x01) {
@@ -736,13 +817,16 @@ void CPU::operator_SER(const Instruction_st &instruction) {
     std::string instruction_counter_str = stream.str(); // Convert to string
 
     // Extract the destination register (Rd) from the instruction
-    uint8_t d = (uint8_t)((instruction.instructionRaw >> 4) & 0x0F) + 16; // Extract bits 4-7
+    uint8_t Rd = (uint8_t)((instruction.instructionRaw >> 4) & 0x0F) + 16; // Extract bits 4-7
 
     // Load the value $FF directly into the destination register
-    m_registers[d] = 0xFF;
+    m_registers[Rd] = 0xFF;
+
+    // write data to sram 
+    sram_write(Rd, &m_registers[Rd], 1);
 
     // Print debug information
-    AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => SER R", static_cast<int>(d));
+    AVR_tlm_sim::log::printInfo(instruction_counter_str, ": ", std::setfill('0'), std::setw(4), std::hex, instruction.instructionRaw, " => SER R", static_cast<int>(Rd));
 
     // Update the program counter
     m_program_counter += 1;
