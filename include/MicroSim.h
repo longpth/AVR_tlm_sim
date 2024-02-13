@@ -41,4 +41,9 @@ private:
   std::atomic<bool> m_stop_gdb_server;
 
   void runGdbServer();
+  std::string processGDBCommand(std::string command);
+  std::string examineMemory(const std::string& address, int count);
+  std::string displayRegisters();
+  std::string displayMemoryAsString(const std::string& address, int count);
+  std::string displayMemoryAsInstructions(const std::string& address, int count);
 };
