@@ -11,6 +11,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <atomic> // For std::atomic_flag
 #include "Mytype.h"
 #include "CPU.h"
 #include "Flash.h"
@@ -37,6 +38,7 @@ public:
 
 private:
   std::thread m_gdb_server_thread;
+  std::atomic<bool> m_stop_gdb_server;
 
   void runGdbServer();
 };

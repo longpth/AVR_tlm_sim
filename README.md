@@ -3,8 +3,15 @@
 In progress ...
 
 # COMPILATION
-
+```bash
+mkdir build
+cd build
 cmake -DDEBUG=ON ..
+make
+```
 
 # RUN
-AVR_tlm_sim ./path_to_hex_file
+```bash
+cd build
+AVR_tlm_sim ../samples/MEGA_LED_EXAMPLE1/MEGA_LED_EXAMPLE1/Debug/MEGA_LED_EXAMPLE1.hex
+```
