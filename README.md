@@ -1,3 +1,7 @@
+# OVERVIEW
+
+ATMega328P microcontroller simulation using SystemC-TLM.
+
 # STATUS
 
 In progress ...
